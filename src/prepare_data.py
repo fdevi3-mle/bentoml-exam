@@ -1,19 +1,16 @@
-from pyexpat import features
 from typing import Tuple,Annotated
 import os
 import pandas as pd
 import joblib
-from multipart import file_path
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
-from sqlalchemy import column
 from zenml import step, ArtifactConfig
 from zenml.logger import get_logger
 #  Warnings
 import warnings
 from AutoClean import AutoClean
 
-from utils import CSV_PATH, PROCESSED_PATH
+from utils import CSV_PATH, PROCESSED_PATH, get_data, get_csv_path
 
 warnings.filterwarnings('ignore')
 # Set random state
@@ -23,9 +20,10 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
 
 @step
-def bento_data_loader(filepath=CSV_PATH)->Annotated[pd.DataFrame, "bento_raw_data"]:
-    if filepath is None:
-        filepath = CSV_PATH
+def bento_data_loader()->Annotated[pd.DataFrame, "bento_raw_data"]:
+    filepath = CSV_PATH
+    if not os.path.exists(filepath):
+        filepath = get_csv_path
     data = pd.read_csv(filepath,index_col='Serial No.')
     print(data.head(1))
     return data
@@ -40,8 +38,8 @@ def bento_data_processor(data)->Annotated[pd.DataFrame,"bento_processed_data"]:
 
 
 @step
-def bento_data_splitter(data)->Tuple[Annotated[pd.DataFrame, "X_train"],Annotated[pd.DataFrame, "X_test"],Annotated[pd.Series, "y_train"],
-Annotated[pd.Series,"y_test"]]:
+def bento_data_splitter(data)->Tuple[Annotated[pd.DataFrame, "X_train_bento"],Annotated[pd.DataFrame, "X_test_bento"],Annotated[pd.Series, "y_train_bento"],
+Annotated[pd.Series,"y_test_bento"]]:
     y = data['Chance of Admit '] #nice job adding a dumb space
     X = data.drop(['Chance of Admit '], axis=1)
     #split then scale
