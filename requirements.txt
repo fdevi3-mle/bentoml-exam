@@ -3,3 +3,4 @@ joblib
 scikit-learn
 zenml
 requests
+bentoml
