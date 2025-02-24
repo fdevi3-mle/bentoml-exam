@@ -24,8 +24,7 @@ def train_model_bento(X_train, X_test, y_train, y_test)->Annotated[RandomForestR
     #Just use a grid search for the best regresrro
     params = {
         'n_estimators': [100, 200, 300],
-        'max_depth': [2, 5,10],
-        'max_features': ['auto', 'sqrt']
+        'max_depth': [2, 5,10]
     }
     random_search = RandomizedSearchCV(RandomForestRegressor(random_state=random_state),cv=3,n_jobs=-1,
                                        verbose=2,scoring='neg_mean_squared_error',param_distributions=params)
