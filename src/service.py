@@ -23,7 +23,7 @@ USERS = {
 
 class JWTAuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
-        if request.url.path == "/v1/models/admission_model/predict":
+        if request.url.path == "/v1/models/admission_predictor/predict":
             token = request.headers.get("Authorization")
             if not token:
                 return JSONResponse(status_code=401, content={"detail": "Missing authentication token"})
@@ -50,11 +50,10 @@ class AdmissionModel(BaseModel):
     GRE_Score: float = Field(description="GRE Score")
     TOEFL_Score: float = Field(description="TOEFL Score")
     University_Rating: float = Field(description="University Ranking")
-    SOP: float = Field(description="Statement of Purpose", ge=0,le=5)
-    LOR: float = Field(description="Letter of Recommendation",ge=0,le=5)
-    CGPA: float = Field(description="Cumulative GPA",ge=0,le=5)
-    Research: int = Literal['1','0']
-    Chance_of_Admit: float = Field(description="Chance of Admission")
+    SOP: float = Field(description="Statement of Purpose")
+    LOR: float = Field(description="Letter of Recommendation")
+    CGPA: float = Field(description="Cumulative GPA")
+    Research: int = Field(description="Cumulative GPA",ge=0,le=1)
 
 
 # Load the model from Model Store
@@ -82,7 +81,7 @@ def login(credentials: dict) -> dict:
 @admission_service.api(
     input=JSON(pydantic_model=AdmissionModel),
     output=JSON(),
-    route='v1/models/admission_model/predict'
+    route='v1/models/admission_predictor/predict'
 )
 
 async def predict(input_data: AdmissionModel, ctx: bentoml.Context) -> dict:
@@ -91,7 +90,6 @@ async def predict(input_data: AdmissionModel, ctx: bentoml.Context) -> dict:
 
     # Convert input data to numpy array in correct order
     input_series = np.array([
-        input_data.Serial_No,
         input_data.GRE_Score,
         input_data.TOEFL_Score,
         input_data.University_Rating,
@@ -99,7 +97,6 @@ async def predict(input_data: AdmissionModel, ctx: bentoml.Context) -> dict:
         input_data.LOR,
         input_data.CGPA,
         input_data.Research,
-        input_data.Chance_of_Admit
     ])
 
     result = await admission_model_runner.predict.async_run(input_series.reshape(1, -1))

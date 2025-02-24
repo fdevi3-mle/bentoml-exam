@@ -45,12 +45,12 @@ Annotated[pd.Series,"y_test_bento"]]:
     #split then scale
     X_train,X_test,y_train,y_test = train_test_split(X, y, test_size=0.2,
                                                         random_state=random_state)
-    #scaler
-    scaler = StandardScaler()
-    scaler_features = ['GRE Score', 'TOEFL Score', 'University Rating', 'SOP',
-       'LOR ', 'CGPA'] ## one coudl consider Univers rating and sop as cat but whateverr
-    X_train[scaler_features] = scaler.fit_transform(X_train[scaler_features])
-    X_test[scaler_features] = scaler.transform(X_test[scaler_features])
+    # #scaler
+    # scaler = StandardScaler()
+    # scaler_features = ['GRE Score', 'TOEFL Score', 'University Rating', 'SOP',
+    #    'LOR ', 'CGPA'] ## one coudl consider Univers rating and sop as cat but whateverr
+    # X_train[scaler_features] = scaler.fit_transform(X_train[scaler_features])
+    # X_test[scaler_features] = scaler.transform(X_test[scaler_features])
 
     #Research is already encoded so let it be
     print(X_train.head(1))
