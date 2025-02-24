@@ -21,7 +21,7 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 def bento_data_loader()->Annotated[pd.DataFrame, "bento_raw_data"]:
     filepath = CSV_PATH
     if not os.path.exists(filepath):
-        filepath = get_csv_path
+        filepath = get_csv_path()
     data = pd.read_csv(filepath,index_col='Serial No.')
     print(data.head(1))
     return data
