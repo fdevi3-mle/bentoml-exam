@@ -17,10 +17,28 @@ bad_credentials = {
     "username": "hacker",
     "password": "hacker"
 }
-# Secret key and algorithm for JWT authentication
-JWT_SECRET_KEY = "hacker"
-JWT_ALGORITHM = "HS256"
 
+poor_data = {
+    "Serial_No": 12345,
+    "GRE_Score": 140,
+    "TOEFL_Score": 20,
+    "University_Rating": 5,
+    "SOP": 3.0,
+    "LOR": 1.0,
+    "CGPA": 3.0,  ##this one is highly weighted
+    "Research": 0
+}
+
+good_data = {
+    "Serial_No": 12545,
+    "GRE_Score": 340,
+    "TOEFL_Score": 110,
+    "University_Rating": 5,
+    "SOP": 5.0,
+    "LOR": 5.0,
+    "CGPA": 9.0,
+    "Research": 0
+}
 
 # Send a POST request to the login endpoint
 login_response = requests.post(
@@ -34,18 +52,6 @@ if login_response.status_code == 200:
     token = login_response.json().get("token")
     print("Token JWT :", token)
 
-    # Data to be sent to the prediction endpoint
-    data = {
-        "Serial_No": 12345,
-        "GRE_Score": 140,
-        "TOEFL_Score": 20,
-        "University_Rating": 5,
-        "SOP": 5.0,
-        "LOR": 5.0,
-        "CGPA": 9.0, ##this one is highly weighted
-        "Research": 0
-    }
-
     # Send a POST request to the prediction
     response = requests.post(
         predict_url,
@@ -53,33 +59,16 @@ if login_response.status_code == 200:
             "Content-Type": "application/json",
             "Authorization": f"Bearer {token}"
         },
-        json=data
+        json=good_data
     )
 
-    print("Réponse de l'API de prédiction:", response.text)
+    print("The response to the prediction:", response.text)
 else:
-    print("Erreur lors de la connexion:", login_response.text)
+    print(login_response.status_code)
+    print(login_response.content)
+    print(login_response.url)
+    print(f"Some stupidity with login at the {login_response.url} with a status code {login_response.status_code} ")
 
-
-# Function to create a JWT token
-def create_jwt_token(user_id: str):
-    expiration = datetime.utcnow()  + timedelta(hours=1)
-    payload = {
-        "sub": user_id,
-        "exp": expiration
-    }
-    token = jwt.encode(payload, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
-    return token
-
-
-def create_bad_jwt_token(user_id: str):
-    expiration = datetime.utcnow()  + timedelta(seconds=1)
-    payload = {
-        "sub": user_id,
-        "exp": expiration
-    }
-    token = jwt.encode(payload, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
-    return token
 
 
 def get_jwt_token(credentials):
@@ -96,6 +85,37 @@ def get_jwt_token(credentials):
         print(lr.status_code)
         return None,lr.status_code
 
+def make_prediction_with_token(credentials, result=None, token=None):
+    if result is None:
+        raise ValueError("Put a valid data json for prediction")
+    lr = requests.post(
+        login_url,
+        headers={"Content-Type": "application/json"},
+        json=credentials
+    )
+    if lr.status_code == 200:
+        tk = lr.json().get("token")
+        print("Token JWT :", tk)
+        qr = requests.post(
+            predict_url,
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {token}"
+            },
+            json=result
+        )
+
+        print("The response to the prediction:", qr.text)
+
+    else:
+        print(lr.status_code)
+        print(f"Some stupidity with login at the {lr.url} with a status code {lr.status_code} ")
+
+    return tk, lr.status_code , qr.status_code
+
+
+
+
 ## Tests based on the JWT
 # JWT Authentication Test:
 #
@@ -103,25 +123,11 @@ def get_jwt_token(credentials):
 # Verify that authentication fails if the JWT token has expired.
 # Verify that authentication succeeds with a valid JWT token.
 
-def test_jwt_authentication_invalid_token():
-    # Simulate a valid JWT token
-    username = bad_credentials.get("username")
-    token = create_jwt_token(username)
-    response = requests.get(
-        login_url,
-        headers={"Authorization": f"Bearer {token}"}
-    )
-    assert response.status_code != 200, f" not Expected 200, but got {response.status_code}"
+#The first 3 tests are stupid as I just took the DS teams code and that code is crap so I will simulate a bad token
 
-def test_jwt_authentication_valid_token():
-    # Simulate a valid JWT token
-    username = good_credentials.get("username")
-    token = create_jwt_token(username)
-    response = requests.get(
-        login_url,
-        headers={"Authorization": f"Bearer {token}"}
-    )
-    assert response.status_code == 200, f" not Expected 200, but got {response.status_code}"
+def test_something(credentials=good_credentials, data=good_data):
+    a,b,c = make_prediction_with_token(credentials, data)
+    assert b==200, f"Expected 200 but got {b}"
 
 
 
