@@ -3,7 +3,7 @@ import os
 import pandas as pd
 import joblib
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.preprocessing import StandardScaler, OneHotEncoder, MinMaxScaler
 from zenml import step, ArtifactConfig
 from zenml.logger import get_logger
 #  Warnings
@@ -42,15 +42,27 @@ def bento_data_splitter(data)->Tuple[Annotated[pd.DataFrame, "X_train_bento"],An
 Annotated[pd.Series,"y_test_bento"]]:
     y = data['Chance of Admit '] #nice job adding a dumb space
     X = data.drop(['Chance of Admit '], axis=1)
+
+    scaler_features = ['GRE Score', 'TOEFL Score','University Rating', 'SOP',
+       'LOR ', 'CGPA']
+    values = [340,120,5,5,5,10]
+
+    mapping = dict(zip(scaler_features,values))
+    for key,value in mapping.items():
+        X[key] = X[key]/value
+
     #split then scale
     X_train,X_test,y_train,y_test = train_test_split(X, y, test_size=0.2,
                                                         random_state=random_state)
     # #scaler
-    # scaler = StandardScaler()
+    # scaler = MinMaxScaler()
     # scaler_features = ['GRE Score', 'TOEFL Score', 'University Rating', 'SOP',
     #    'LOR ', 'CGPA'] ## one coudl consider Univers rating and sop as cat but whateverr
     # X_train[scaler_features] = scaler.fit_transform(X_train[scaler_features])
     # X_test[scaler_features] = scaler.transform(X_test[scaler_features])
+
+
+
 
     #Research is already encoded so let it be
     print(X_train.head(1))
