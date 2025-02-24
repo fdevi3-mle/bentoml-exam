@@ -19,7 +19,7 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
 ##I assume you want to load the csv but
 @step
-def train_model_bento(X_train, X_test, y_train, y_test)->Annotated[RandomForestRegressor,"RandomForestRegressorBento"]:
+def train_model_bento(X_train, X_test, y_train, y_test)->Annotated[RandomForestRegressor,"admission_model"]:
 
     #Just use a grid search for the best regresrro
     params = {
