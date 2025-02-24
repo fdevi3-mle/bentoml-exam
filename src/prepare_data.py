@@ -1,16 +1,14 @@
-from typing import Tuple,Annotated
 import os
-import pandas as pd
-import joblib
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, OneHotEncoder, MinMaxScaler
-from zenml import step, ArtifactConfig
-from zenml.logger import get_logger
 #  Warnings
 import warnings
-from AutoClean import AutoClean
+from typing import Tuple, Annotated
 
-from utils import CSV_PATH, PROCESSED_PATH, get_data, get_csv_path
+import pandas as pd
+from AutoClean import AutoClean
+from sklearn.model_selection import train_test_split
+from zenml import step
+
+from utils import CSV_PATH, PROCESSED_PATH, get_csv_path
 
 warnings.filterwarnings('ignore')
 # Set random state
