@@ -1,0 +1,24 @@
+service: "src.service:admission_service"
+description: "Admission Prediciton "
+labels:
+  owner: "Francois NOV 24BDS MLE"
+  project: "bentoml"
+
+include:
+  - src/
+  - data/
+  - utils.py
+  - zenml-main.py
+
+python:
+  packages:
+    - numpy
+    - pandas
+    - scikit-learn
+    - bentoml
+    - pydantic
+    - requests
+    - pyjwt
+    - starlette
+    - zenml
+    - joblib
