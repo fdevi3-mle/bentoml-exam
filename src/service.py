@@ -47,12 +47,12 @@ class JWTAuthMiddleware(BaseHTTPMiddleware):
 ##TODO convert to literal
 # Pydantic model to validate input data
 class AdmissionModel(BaseModel):
-    GRE_Score: float = Field(description="GRE Score")
-    TOEFL_Score: float = Field(description="TOEFL Score")
+    GRE_Score: float = Field(description="GRE Score",ge=0,le=340)
+    TOEFL_Score: float = Field(description="TOEFL Score",ge=0,le=120)
     University_Rating: float = Field(description="University Ranking")
-    SOP: float = Field(description="Statement of Purpose")
-    LOR: float = Field(description="Letter of Recommendation")
-    CGPA: float = Field(description="Cumulative GPA")
+    SOP: float = Field(description="Statement of Purpose",ge=0,le=5)
+    LOR: float = Field(description="Letter of Recommendation",ge=0,le=5)
+    CGPA: float = Field(description="Cumulative GPA",ge=0,le=10)
     Research: int = Field(description="Cumulative GPA",ge=0,le=1)
 
 
@@ -89,15 +89,17 @@ async def predict(input_data: AdmissionModel, ctx: bentoml.Context) -> dict:
     user = request.state.user if hasattr(request.state, 'user') else None
 
     # Convert input data to numpy array in correct order
+    # also scale it , its a very crude scaler that takes the max value only
     input_series = np.array([
-        input_data.GRE_Score,
-        input_data.TOEFL_Score,
-        input_data.University_Rating,
-        input_data.SOP,
-        input_data.LOR,
-        input_data.CGPA,
+        input_data.GRE_Score/340,
+        input_data.TOEFL_Score/120,
+        input_data.University_Rating/5,
+        input_data.SOP/5,
+        input_data.LOR/5,
+        input_data.CGPA/10,
         input_data.Research,
     ])
+    print(input_series)
 
     result = await admission_model_runner.predict.async_run(input_series.reshape(1, -1))
 
