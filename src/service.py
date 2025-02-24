@@ -111,7 +111,7 @@ async def predict(input_data: AdmissionModel, ctx: bentoml.Context) -> dict:
 
 # Function to create a JWT token
 def create_jwt_token(user_id: str):
-    expiration = datetime. datetime. now(datetime. UTC) + timedelta(hours=1)
+    expiration = datetime.utcnow()  + timedelta(hours=1)
     payload = {
         "sub": user_id,
         "exp": expiration
