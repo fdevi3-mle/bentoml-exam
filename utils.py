@@ -6,7 +6,7 @@ DATA_PATH = os.path.join(CURRENT_PATH,'data')
 PROCESSED_PATH = os.path.join(DATA_PATH,'processed')
 RAW_PATH = os.path.join(DATA_PATH,'raw')
 SRC_PATH = os.path.join(CURRENT_PATH,'src')
-MODEL_PATH = os.path.join(CURRENT_PATH,'model')
+MODEL_PATH = os.path.join(CURRENT_PATH,'models')
 
 ADMISSION_FILENAME = 'admission.csv'
 CSV_PATH = os.path.join(RAW_PATH,ADMISSION_FILENAME)
