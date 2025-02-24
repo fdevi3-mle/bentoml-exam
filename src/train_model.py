@@ -4,12 +4,10 @@ import warnings
 from typing import Annotated
 
 import bentoml
-from bentoml import bentos
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.linear_model import ElasticNetCV
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 from sklearn.model_selection import RandomizedSearchCV
 from zenml import step
-from zenml.integrations.bentoml.steps import bento_builder_step
 
 warnings.filterwarnings('ignore')
 # Set random state
@@ -19,15 +17,16 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
 ##I assume you want to load the csv but
 @step
-def train_model_bento(X_train, X_test, y_train, y_test)->Annotated[RandomForestRegressor,"admission_model"]:
+def train_model_bento(X_train, X_test, y_train, y_test)->Annotated[ElasticNetCV,"admission_model"]:
 
     #Just use a grid search for the best regresrro
     params = {
-        'n_estimators': [100, 200, 300],
-        'max_depth': [2, 5,10]
+        'l1_ratio' :[0.1,0.5],
+        'n_alphas':[100,200],
+        'max_iter':[1000,2000]
     }
-    random_search = RandomizedSearchCV(RandomForestRegressor(random_state=random_state),cv=3,n_jobs=-1,
-                                       verbose=2,scoring='neg_mean_squared_error',param_distributions=params)
+    random_search = RandomizedSearchCV(ElasticNetCV(),cv=3,n_jobs=-1,
+                                       verbose=2,scoring='r2',param_distributions=params)
     random_search.fit(X_train, y_train)
     print(f"The best parameters: {random_search.best_params_}")
 
