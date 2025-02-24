@@ -1,6 +1,10 @@
-pandas
-joblib
-scikit-learn
-zenml
-requests
-bentoml
+numpy~=2.2.3
+bentoml~=1.4.0
+PyJWT~=2.7.0
+pydantic~=2.8.2
+starlette~=0.36.3
+scikit-learn~=1.6.1
+zenml~=0.73.0
+pandas~=2.2.3
+joblib~=1.4.2
+requests~=2.32.3
