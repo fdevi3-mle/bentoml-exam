@@ -25,14 +25,13 @@ if login_response.status_code == 200:
     # Data to be sent to the prediction endpoint
     data = {
         "Serial_No": 12345,
-        "GRE_Score": 330,
-        "TOEFL_Score": 110,
-        "University_Rating": 4.5,
-        "SOP": 4.0,
-        "LOR": 4.0,
-        "CGPA": 4.0,
-        "Research": 1,
-        "Chance_of_Admit": 0.85
+        "GRE_Score": 140,
+        "TOEFL_Score": 20,
+        "University_Rating": 5,
+        "SOP": 5.0,
+        "LOR": 5.0,
+        "CGPA": 9.0, ##this one is highly weighted
+        "Research": 0
     }
 
     # Send a POST request to the prediction
