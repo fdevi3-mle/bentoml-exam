@@ -1,10 +1,8 @@
-from zenml import pipeline, step
-from zenml import pipeline, ArtifactConfig
+from zenml import pipeline
 from zenml.client import Client
+
 from src.prepare_data import bento_data_loader, bento_data_processor, bento_data_splitter
 from src.train_model import train_model_bento
-from zenml.integrations.bentoml.steps import bento_builder,bentoml_model_deployer_step
-
 
 # Zenml Client
 client = Client()
