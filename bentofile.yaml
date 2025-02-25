@@ -13,15 +13,15 @@ include:
 
 python:
   packages:
-    - numpy
-    - pandas
-    - scikit-learn
-    - bentoml
-    - pydantic
-    - requests
-    - PyJWT
-    - starlette
-    - zenml
-    - joblib
-    - pytest
-    - scipy
+    - "numpy"
+    - "pandas"
+    - "scikit-learn"
+    - "bentoml"
+    - "pydantic"
+    - "requests"
+    - "PyJWT"
+    - "starlette"
+    - "zenml"
+    - "joblib"
+    - "pytest"
+    - "scipy"
