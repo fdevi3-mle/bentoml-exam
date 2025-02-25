@@ -4,6 +4,7 @@ import warnings
 from typing import Annotated
 
 import bentoml
+from scipy.stats import loguniform
 from sklearn.linear_model import ElasticNetCV
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 from sklearn.model_selection import RandomizedSearchCV
@@ -21,12 +22,13 @@ def train_model_bento(X_train, X_test, y_train, y_test)->Annotated[ElasticNetCV,
 
     #Just use a grid search for the best regresrro
     params = {
-        'l1_ratio' :[0.1,0.5],
-        'n_alphas':[100,200],
-        'max_iter':[1000,2000]
+        'l1_ratio' :[0.1, 0.5, 0.7, 0.9, 0.95, 0.99, 1.0],
+        'n_alphas':[100,200,300,500],
+        'max_iter':[1000,2000,3000,5000],
+        'cv':[3,5]
     }
-    random_search = RandomizedSearchCV(ElasticNetCV(),cv=3,n_jobs=-1,
-                                       verbose=2,scoring='r2',param_distributions=params)
+    random_search = RandomizedSearchCV(ElasticNetCV(positive=True,fit_intercept=False,random_state=random_state),cv=5,n_jobs=-1,
+                                       verbose=2,scoring='neg_mean_squared_error',param_distributions=params,random_state=random_state)
     random_search.fit(X_train, y_train)
     print(f"The best parameters: {random_search.best_params_}")
 
