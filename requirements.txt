@@ -1,10 +1,11 @@
-numpy~=2.2.3
-bentoml~=1.4.0
 PyJWT~=2.7.0
+requests~=2.32.3
+pytest~=8.3.4
+bentoml~=1.4.0
+numpy~=2.2.3
 pydantic~=2.8.2
 starlette~=0.36.3
+scipy~=1.15.2
 scikit-learn~=1.6.1
 zenml~=0.73.0
 pandas~=2.2.3
-joblib~=1.4.2
-requests~=2.32.3
