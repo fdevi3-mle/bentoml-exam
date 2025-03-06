@@ -7,7 +7,7 @@ import requests
 import pytest
 # The URL of the login and prediction endpoints
 login_url = "http://127.0.0.1:3000/login"
-predict_url = "http://127.0.0.1:3000/v1/models/admission_predictor/predict"
+predict_url = "http://127.0.0.1:3000/v1/models/admission_service/predict"
 
 # Données de connexion
 good_credentials = {

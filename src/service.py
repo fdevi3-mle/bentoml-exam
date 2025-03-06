@@ -24,7 +24,7 @@ USERS = {
 
 class JWTAuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
-        if request.url.path == "/v1/models/admission_predictor/predict":
+        if request.url.path == "/v1/models/admission_service/predict":
             token = request.headers.get("Authorization")
             if not token:
                 return JSONResponse(status_code=401, content={"detail": "Missing authentication token"})
@@ -61,7 +61,7 @@ class AdmissionModel(BaseModel):
 admission_model_runner = bentoml.sklearn.get("admission_model:latest").to_runner()
 
 # Create service API
-admission_service = bentoml.Service("admission_predictor", runners=[admission_model_runner])
+admission_service = bentoml.Service("admission_service", runners=[admission_model_runner])
 
 # Add JWT authentication middleware
 admission_service.add_asgi_middleware(JWTAuthMiddleware)
@@ -82,7 +82,7 @@ def login(credentials: dict) -> dict:
 @admission_service.api(
     input=JSON(pydantic_model=AdmissionModel),
     output=JSON(),
-    route='v1/models/admission_predictor/predict'
+    route='v1/models/admission_service/predict'
 )
 
 async def predict(input_data: AdmissionModel, ctx: bentoml.Context) -> dict:

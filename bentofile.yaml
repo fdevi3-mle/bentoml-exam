@@ -4,6 +4,10 @@ labels:
   owner: "Francois NOV 24BDS MLE"
   project: "bentoml"
 
+docker:
+  dockerfile_template: "./Dockerfile.template"
+  base_image: python:3.12-slim
+
 include:
   - src/
   - data/

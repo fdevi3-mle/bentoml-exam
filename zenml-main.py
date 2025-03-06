@@ -20,6 +20,5 @@ def bentoml_pipeline():
 
 
 if __name__ == "__main__":
-
     bentoml_pipeline()  # call this to run the pipeline
 
